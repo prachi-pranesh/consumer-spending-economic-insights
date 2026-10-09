@@ -1,0 +1,217 @@
+---
+title: "Consumer Spending Trends & Economic Insights"
+subtitle: "A reproducible Python analysis — synthetic practice dataset"
+author: "Prachi Pranesh"
+date: today
+format:
+  html:
+    toc: true
+    toc-depth: 3
+    code-fold: true
+    embed-resources: true
+execute:
+  echo: true
+  warning: false
+  message: false
+---
+
+## Important data note
+
+**This report uses synthetic illustrative data, not official Indian economic statistics.**
+The values are intended to demonstrate a reproducible analytics workflow. Do not use them to make claims about actual inflation or consumer spending in India.
+
+## Executive summary
+
+This report demonstrates a repeatable workflow for loading, validating, summarising, and visualising monthly inflation-style indicators by consumption category and residence type.
+
+The current dataset covers January–April 2025 and includes urban and rural rows across four consumption categories. The analysis below describes only the synthetic sample.
+
+## 1. Research questions
+
+- How do the sample inflation values vary by consumption category?
+- How do average values compare between urban and rural records?
+- How do the monthly averages change over the period?
+- How can the analysis be organised into reusable Python functions?
+
+## 2. Load the data
+
+```{python}
+import pandas as pd
+import matplotlib.pyplot as plt
+
+df = pd.read_csv("consumer_spending_raw_dataset.csv")
+df.head()
+```
+
+## 3. Data quality checks
+
+```{python}
+print("Shape:", df.shape)
+print("\nData types and non-null counts:")
+df.info()
+
+print("\nMissing values by column:")
+display(df.isna().sum().to_frame("missing_values"))
+
+print("\nDuplicate rows:", df.duplicated().sum())
+```
+
+Convert the month field to a date and inspect the coverage.
+
+```{python}
+df_clean = df.copy()
+df_clean["month"] = pd.to_datetime(df_clean["month"], format="%Y-%m")
+
+print("Date range:", df_clean["month"].min().date(), "to", df_clean["month"].max().date())
+print("\nRows per month:")
+display(df_clean.groupby("month").size().to_frame("row_count"))
+
+print("\nResidence types:", sorted(df_clean["residence_type"].unique()))
+print("Categories:", sorted(df_clean["consumption_category"].unique()))
+```
+
+## 4. Average value by consumption category
+
+```{python}
+category_inflation = (
+    df_clean.groupby("consumption_category")["yoy_inflation_pct"]
+    .mean()
+    .sort_values(ascending=False)
+)
+
+display(category_inflation.to_frame("average_illustrative_inflation_pct"))
+```
+
+```{python}
+ax = category_inflation.plot(kind="bar", figsize=(9, 5))
+ax.set_title("Average Illustrative Inflation by Category")
+ax.set_xlabel("Consumption category")
+ax.set_ylabel("Average value (%)")
+ax.tick_params(axis="x", rotation=30)
+ax.grid(axis="y", linestyle="--", alpha=0.35)
+plt.tight_layout()
+plt.show()
+```
+
+**Interpretation:** Use the table and chart to compare category averages in this sample. Because the data is synthetic, these values do not represent official category inflation.
+
+## 5. Urban and rural comparison over time
+
+```{python}
+monthly_trend = (
+    df_clean.groupby(["month", "residence_type"])["yoy_inflation_pct"]
+    .mean()
+    .unstack()
+    .sort_index()
+)
+
+display(monthly_trend.round(3))
+```
+
+```{python}
+ax = monthly_trend.plot(kind="line", marker="o", figsize=(10, 5))
+ax.set_title("Monthly Illustrative Inflation Values: Urban vs Rural")
+ax.set_xlabel("Month")
+ax.set_ylabel("Average value (%)")
+ax.grid(True, linestyle="--", alpha=0.35)
+ax.legend(title="Residence type")
+plt.tight_layout()
+plt.show()
+```
+
+## 6. Month-to-month change
+
+This calculation shows the change in the sample year-over-year inflation rate from one month to the next, in **percentage points**. It is not the month-to-month change in consumer prices.
+
+```{python}
+monthly_change = monthly_trend.diff()
+display(monthly_change.round(3))
+```
+
+## 7. Reusable analysis functions
+
+The following function validates required columns, aggregates the data and returns a summary table.
+
+```{python}
+def summarize_inflation(data):
+    required = {"residence_type", "yoy_inflation_pct"}
+    missing = required - set(data.columns)
+    if missing:
+        raise ValueError(f"Missing required columns: {sorted(missing)}")
+
+    summary = (
+        data.groupby("residence_type")["yoy_inflation_pct"]
+        .agg(["mean", "min", "max"])
+        .rename(columns={
+            "mean": "average_pct",
+            "min": "minimum_pct",
+            "max": "maximum_pct"
+        })
+        .round(2)
+    )
+    return summary
+
+display(summarize_inflation(df_clean))
+```
+
+A second reusable function creates the monthly comparison chart.
+
+```{python}
+def plot_monthly_inflation(data):
+    required = {"month", "residence_type", "yoy_inflation_pct"}
+    missing = required - set(data.columns)
+    if missing:
+        raise ValueError(f"Missing required columns: {sorted(missing)}")
+
+    trend = (
+        data.groupby(["month", "residence_type"])["yoy_inflation_pct"]
+        .mean()
+        .unstack()
+        .sort_index()
+    )
+
+    ax = trend.plot(kind="line", marker="o", figsize=(10, 5))
+    ax.set_title("Monthly Illustrative Inflation Values: Urban vs Rural")
+    ax.set_xlabel("Month")
+    ax.set_ylabel("Average value (%)")
+    ax.grid(True, linestyle="--", alpha=0.35)
+    ax.legend(title="Residence type")
+    plt.tight_layout()
+    plt.show()
+    return trend
+
+reusable_trend = plot_monthly_inflation(df_clean)
+```
+
+## 8. Findings and limitations
+
+### What this workflow demonstrates
+
+- Loading a CSV into Pandas and validating its quality.
+- Converting dates and checking the data's coverage.
+- Grouping and aggregating data by category, month, and residence type.
+- Building clear charts with Matplotlib.
+- Writing reusable functions with input validation and returned outputs.
+
+### Limitations
+
+- All rows are synthetic examples; results are not real economic findings.
+- The dataset covers only four months and four categories.
+- No causal relationship can be inferred from these values.
+- The field `illustrative_price_index` is an example field and should not be treated as an official price index.
+
+## 9. Next steps
+
+For a portfolio-ready economic analysis:
+
+1. Replace the synthetic CSV with a verified public dataset from a source such as India's Ministry of Statistics and Programme Implementation or the Reserve Bank of India.
+2. Record the exact source URL, download date, definitions, frequency, and units.
+3. Re-run the same validation, aggregation, visualisation, and reporting workflow.
+4. Compare compatible datasets only after checking their definitions and time periods.
+5. Publish the report and source code in a GitHub repository.
+
+## References
+
+- [Quarto documentation](https://quarto.org/docs/)
+- [MoSPI eSankhyiki portal](https://esankhyiki.mospi.gov.in/)
+- [Reserve Bank of India Database on Indian Economy](https://dbieold.rbi.org.in/DBIE/)

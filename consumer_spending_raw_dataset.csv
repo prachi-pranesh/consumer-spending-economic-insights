@@ -1,0 +1,33 @@
+month,country,region,residence_type,consumption_category,yoy_inflation_pct,illustrative_price_index,data_status
+2025-01,India,All India,Urban,Food and beverages,4.2,100.0,Synthetic example
+2025-01,India,All India,Urban,Housing,3.1,100.0,Synthetic example
+2025-01,India,All India,Urban,Fuel and light,2.8,100.0,Synthetic example
+2025-01,India,All India,Urban,Transport,3.4,100.0,Synthetic example
+2025-01,India,All India,Rural,Food and beverages,5.1,100.0,Synthetic example
+2025-01,India,All India,Rural,Housing,2.7,100.0,Synthetic example
+2025-01,India,All India,Rural,Fuel and light,3.2,100.0,Synthetic example
+2025-01,India,All India,Rural,Transport,3.0,100.0,Synthetic example
+2025-02,India,All India,Urban,Food and beverages,4.5,100.4,Synthetic example
+2025-02,India,All India,Urban,Housing,3.2,100.3,Synthetic example
+2025-02,India,All India,Urban,Fuel and light,2.9,100.2,Synthetic example
+2025-02,India,All India,Urban,Transport,3.6,100.3,Synthetic example
+2025-02,India,All India,Rural,Food and beverages,5.4,100.5,Synthetic example
+2025-02,India,All India,Rural,Housing,2.8,100.2,Synthetic example
+2025-02,India,All India,Rural,Fuel and light,3.3,100.3,Synthetic example
+2025-02,India,All India,Rural,Transport,3.2,100.2,Synthetic example
+2025-03,India,All India,Urban,Food and beverages,4.1,100.7,Synthetic example
+2025-03,India,All India,Urban,Housing,3.2,100.6,Synthetic example
+2025-03,India,All India,Urban,Fuel and light,2.7,100.4,Synthetic example
+2025-03,India,All India,Urban,Transport,3.5,100.6,Synthetic example
+2025-03,India,All India,Rural,Food and beverages,4.9,101.0,Synthetic example
+2025-03,India,All India,Rural,Housing,2.9,100.5,Synthetic example
+2025-03,India,All India,Rural,Fuel and light,3.1,100.6,Synthetic example
+2025-03,India,All India,Rural,Transport,3.1,100.5,Synthetic example
+2025-04,India,All India,Urban,Food and beverages,3.8,101.0,Synthetic example
+2025-04,India,All India,Urban,Housing,3.3,100.9,Synthetic example
+2025-04,India,All India,Urban,Fuel and light,2.6,100.6,Synthetic example
+2025-04,India,All India,Urban,Transport,3.3,100.9,Synthetic example
+2025-04,India,All India,Rural,Food and beverages,4.6,101.4,Synthetic example
+2025-04,India,All India,Rural,Housing,2.9,100.8,Synthetic example
+2025-04,India,All India,Rural,Fuel and light,3.0,100.9,Synthetic example
+2025-04,India,All India,Rural,Transport,3.0,100.8,Synthetic example
